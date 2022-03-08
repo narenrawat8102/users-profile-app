@@ -1,9 +1,10 @@
 "use strict";
 
 let allUsersData = null;
+const baseApiURL = "https://dummyapi.io/data/v1";
 
 // Get All User Promise / Code Producing
-const profilesData = fetch("https://dummyapi.io/data/v1/user?limit=10", {
+const profilesData = fetch(`${baseApiURL}/user?page=1&limit=10`, {
   method: "GET",
   headers: {
     "Content-Type": "application/json",
@@ -31,7 +32,7 @@ profilesData
         const appId = viewDetailsBtn.getAttribute("data-id");
 
         // Get Single User Promise / Code Producing
-        const profileData = fetch(`https://dummyapi.io/data/v1/user/${appId}`, {
+        const profileData = fetch(`${baseApiURL}/user/${appId}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -42,39 +43,69 @@ profilesData
         profileData
           .then((res) => res.json())
           .then((user) => {
-            const userDetailsTemplate = `<div class="pic">
-            <img
-              src="${user.picture}"
-              alt=""
-            />
-          </div>
-          <div class="contact">
-            <h3>Contact Details:</h3>
-            <br />
-            <p><b>Name: </b>${
-              user.title + " " + user.firstName + " " + user.lastName
-            }</p>
-            <p><b>Gender: </b>${user.gender}</p>
-            <p><b>Date of Birth: </b>${user.dateOfBirth}</p>
-            <p><b>Register Date: </b>${user.registerDate}</p>
-            <p><b>Email: </b>${user.email}</p>
-            <p><b>Phone: </b>${user.phone}</p>
-          </div>
-          <div class="address">
-            <h3>Address:</h3>
-            <br />
-            <p><b>State: </b>${user.location.state}</p>
-            <p><b>Street: </b>${user.location.street}</p>
-            <p><b>City: </b>${user.location.city}</p>
-            <p><b>Country: </b>${user.location.country}</p>
-            <p><b>Timezone: </b>${user.location.timezone}</p>
-          </div>`;
+            const userDetailsTemplate = `
+            <div class="pic">
+               <img src="${user.picture}" alt=""/>
+            </div>
+            <div class="contact">
+               <h3>Contact Details:</h3>
+               <br />
+               <p><b>Name: </b>${
+                 user.title + " " + user.firstName + " " + user.lastName
+               }</p>
+               <p><b>Gender: </b>${user.gender}</p>
+               <p><b>Date of Birth: </b>${user.dateOfBirth}</p>
+               <p><b>Register Date: </b>${user.registerDate}</p>
+               <p><b>Email: </b>${user.email}</p>
+               <p><b>Phone: </b>${user.phone}</p>
+            </div>
+            <div class="address">
+               <h3>Address:</h3>
+               <br />
+               <p><b>State: </b>${user.location.state}</p>
+               <p><b>Street: </b>${user.location.street}</p>
+               <p><b>City: </b>${user.location.city}</p>
+               <p><b>Country: </b>${user.location.country}</p>
+               <p><b>Timezone: </b>${user.location.timezone}</p>
+            </div>`;
 
             getModalBodyEle.innerHTML = userDetailsTemplate;
-            console.log(user);
           });
+      });
+    }
+  })
+  .then((data) => {
+    const getAllPageBtns = document.querySelectorAll(".page_num");
+    for (let i = 0; i < getAllPageBtns.length; i++) {
+      const pageBtn = getAllPageBtns[i];
 
-        console.log("Button Clicked", appId);
+      pageBtn.addEventListener("click", function () {
+        for (let i = 0; i < getAllPageBtns.length; i++) {
+          const singleBtn = getAllPageBtns[i];
+
+          singleBtn.classList.remove("active");
+        }
+        const pageNum = pageBtn.getAttribute("data-id");
+        pageBtn.classList.add("active");
+
+        const getNextPageData = fetch(
+          `${baseApiURL}/user?page=${pageNum}&limit=10`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "app-id": "62244a20de40fc669036d85b",
+            },
+          }
+        );
+
+        getNextPageData
+          .then((res) => res.json())
+          .then((data) => {
+            allUsersData = data.data;
+            createUserTemplate(allUsersData);
+            console.log(data);
+          });
       });
     }
   });
@@ -99,8 +130,4 @@ function createUserTemplate(usersList) {
 
   const getContentContainerEle = document.querySelector(".content_container");
   getContentContainerEle.innerHTML = allUsersStr;
-}
-
-function userDetailsButtonClicked() {
-  console.log("button clicked");
 }

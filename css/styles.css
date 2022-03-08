@@ -9,6 +9,7 @@ body {
   box-sizing: border-box;
 }
 
+/* Card CSS Starts */
 .content_container {
   display: flex;
   gap: 35px;
@@ -58,7 +59,6 @@ body {
 /* Modal CSS Starts  */
 .modal-dialog {
   width: 700px;
-  /* height: 205px; */
 }
 
 .modal-body {
@@ -77,3 +77,33 @@ body {
   height: 215px;
   margin-top: 24px;
 }
+
+/* Pagination CSS Section Satrts */
+.pagination_container {
+  display: flex;
+  justify-content: center;
+  margin: 25px;
+}
+
+.pagination {
+  display: inline-block;
+}
+
+.pagination a {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+.pagination a.active {
+  background-color: #4caf50;
+  color: white;
+  border-radius: 5px;
+}
+
+.pagination a:hover:not(.active) {
+  background-color: #ddd;
+  border-radius: 5px;
+}
+/* Pagination CSS Section Ends */
